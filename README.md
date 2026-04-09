@@ -1,5 +1,7 @@
 # Dev Eval Innovator
 
+[![CI](https://github.com/abhijeetnardele24-hash/dev-eval-innovator/actions/workflows/ci.yml/badge.svg)](https://github.com/abhijeetnardele24-hash/dev-eval-innovator/actions/workflows/ci.yml)
+
 Local-first LLM evaluation runner for developers.
 
 This project is a practical MVP for a real pain point:
