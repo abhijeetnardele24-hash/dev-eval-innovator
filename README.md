@@ -78,7 +78,11 @@ python -m deveval runs --workspace .
 
 python -m deveval report --run-id <new_run_id> --output report.md
 
-7) Fail a CI run when quality drops:
+7) Inspect only failed cases from a run:
+
+python -m deveval show --run-id <new_run_id> --failed-only --workspace .
+
+8) Fail a CI run when quality drops:
 
 python -m deveval run \
   --dataset examples/support_eval.jsonl \

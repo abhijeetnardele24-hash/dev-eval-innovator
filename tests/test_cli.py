@@ -175,6 +175,43 @@ class CliWorkflowTests(unittest.TestCase):
             self.assertTrue(report_path.exists())
             self.assertIn("# DevEval report:", report_path.read_text(encoding="utf-8"))
 
+    def test_show_failed_only_filters_case_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            created = self.run_cli(
+                "run",
+                "--dataset",
+                str(DATASET_PATH),
+                "--provider",
+                "mock",
+                "--model",
+                "mock-v1",
+                "--prompt-template",
+                "You are a helpful support assistant.",
+                "--metric",
+                "contains:reset",
+                workspace=workspace,
+            )
+            self.assertEqual(created.returncode, 0, created.stderr)
+
+            run_id = next(
+                line.split(": ", 1)[1].strip()
+                for line in created.stdout.splitlines()
+                if line.startswith("run_id:")
+            )
+
+            shown = self.run_cli(
+                "show",
+                "--run-id",
+                run_id,
+                "--failed-only",
+                workspace=workspace,
+            )
+            self.assertEqual(shown.returncode, 0, shown.stderr)
+            self.assertIn("cases:", shown.stdout)
+            self.assertIn("case_id: 2", shown.stdout)
+            self.assertNotIn("case_id: 1", shown.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

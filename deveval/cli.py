@@ -165,6 +165,35 @@ def cmd_runs(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_show(args: argparse.Namespace) -> int:
+    workspace = Path(args.workspace).resolve()
+    storage = DevEvalStorage(workspace / ".deveval")
+    run = storage.load_run(args.run_id)
+
+    print(format_run_summary(run))
+
+    cases = list(run.get("cases", []))
+    if args.failed_only:
+        cases = [case for case in cases if not case.get("passed", False)]
+
+    if not cases:
+        print("No matching cases.")
+        return 0
+
+    print("")
+    print("cases:")
+    for case in cases:
+        print(f"- case_id: {case.get('case_id')}")
+        print(f"  passed: {case.get('passed')}")
+        print(f"  score: {float(case.get('score', 0.0)):.1f}")
+        print(f"  latency_ms: {float(case.get('latency_ms', 0.0)):.2f}")
+        print(f"  cache_hit: {case.get('cache_hit')}")
+        print(f"  expected: {case.get('expected')}")
+        print(f"  output: {case.get('output')}")
+
+    return 0
+
+
 def cmd_report(args: argparse.Namespace) -> int:
     workspace = Path(args.workspace).resolve()
     storage = DevEvalStorage(workspace / ".deveval")
@@ -252,6 +281,12 @@ def build_parser() -> argparse.ArgumentParser:
     add_workspace_arg(runs_p)
     runs_p.add_argument("--limit", type=int, default=10)
     runs_p.set_defaults(func=cmd_runs)
+
+    show_p = sub.add_parser("show", help="Show detailed results for a run")
+    add_workspace_arg(show_p)
+    show_p.add_argument("--run-id", required=True)
+    show_p.add_argument("--failed-only", action="store_true", help="Show only failed cases")
+    show_p.set_defaults(func=cmd_show)
 
     report_p = sub.add_parser("report", help="Render a markdown report for a run")
     add_workspace_arg(report_p)
