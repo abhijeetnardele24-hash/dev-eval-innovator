@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dev-eval-innovator"
+version = "0.1.0"
+description = "Local-first LLM evaluation runner with baselines, diffs, caching, and CI-friendly thresholds."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Abhijeet Nardele" }
+]
+keywords = [
+  "llm",
+  "evals",
+  "evaluation",
+  "prompt-testing",
+  "developer-tools",
+  "ci",
+  "openai-compatible",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Testing",
+]
+
+[project.scripts]
+deveval = "deveval.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["deveval*"]
